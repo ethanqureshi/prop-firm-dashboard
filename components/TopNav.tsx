@@ -52,7 +52,7 @@ export default function TopNav() {
           </span>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-8">
             {NAV_LINKS.map(({ id, label }) => (
               <a
                 key={id}
@@ -77,7 +77,7 @@ export default function TopNav() {
               </a>
             ))}
 
-            <div style={{ width: 1, height: 20, backgroundColor: "#1a1a2e", flexShrink: 0 }} />
+            <div style={{ width: 1, height: 22, backgroundColor: "#2a2a3e", flexShrink: 0 }} />
 
             <button
               onClick={() => setModalOpen(true)}
@@ -101,7 +101,7 @@ export default function TopNav() {
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden p-2 rounded-lg cursor-pointer transition-colors duration-150"
+            className="lg:hidden p-2 rounded-lg cursor-pointer transition-colors duration-150"
             style={{ color: "#94a3b8" }}
             onClick={() => setMobileOpen((v) => !v)}
             aria-label="Toggle menu"
@@ -119,7 +119,7 @@ export default function TopNav() {
         {/* Mobile dropdown */}
         {mobileOpen && (
           <div
-            className="md:hidden"
+            className="lg:hidden"
             style={{ borderTop: "1px solid #1a1a2e", backgroundColor: "rgba(8,8,16,0.98)" }}
           >
             <div className="px-6 py-3 flex flex-col">

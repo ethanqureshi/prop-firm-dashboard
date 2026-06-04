@@ -30,7 +30,7 @@ export default function Home() {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 py-10 space-y-16">
+      <main className="max-w-5xl mx-auto px-6 sm:px-8 py-12 space-y-16">
         <EVCalculator />
         <RiskDashboard />
       </main>

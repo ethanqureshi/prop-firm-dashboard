@@ -19,7 +19,8 @@ const INPUT_BASE: React.CSSProperties = {
   backgroundColor: "#0c0c18",
   border: "1px solid #1a1a2e",
   borderRadius: "8px",
-  padding: "9px 12px",
+  padding: "12px 16px",
+  height: "44px",
   color: "#f1f5f9",
   fontSize: "14px",
   outline: "none",
@@ -139,7 +140,7 @@ export default function EVCalculator() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 sm:gap-5 mb-6">
+            <div className="grid grid-cols-2 gap-6 mb-7">
               {field("totalTrades", "Total Trades", "Total trades in your sample", 10000)}
               {field("wins", "Winning Trades", "Number of profitable trades", input.totalTrades)}
               {field("avgWin", "Avg Win ($)", "Average profit per winning trade")}

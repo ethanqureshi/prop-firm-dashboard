@@ -58,7 +58,7 @@ const CARD: React.CSSProperties = {
   backgroundColor: "#0f0f1a",
   border: "1px solid #1a1a2e",
   borderRadius: "16px",
-  padding: "24px",
+  padding: "28px",
   marginBottom: "24px",
 };
 
@@ -67,7 +67,8 @@ const INPUT_BASE: React.CSSProperties = {
   backgroundColor: "#0c0c18",
   border: "1px solid #1a1a2e",
   borderRadius: "8px",
-  padding: "8px 12px",
+  padding: "12px 16px",
+  height: "44px",
   color: "#f1f5f9",
   fontSize: "14px",
   outline: "none",
@@ -102,7 +103,7 @@ function CardHeader({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
     <div className="flex items-center gap-2.5 mb-5">
       <span style={{ color: "#4f8ef7" }}>{icon}</span>
-      <h3 className="text-sm font-bold tracking-wide text-white uppercase" style={{ letterSpacing: "0.05em" }}>
+      <h3 className="text-lg font-bold tracking-wide text-white uppercase" style={{ letterSpacing: "0.05em", marginBottom: 0 }}>
         {title}
       </h3>
     </div>
@@ -229,7 +230,7 @@ export default function RiskDashboard() {
           {/* Firm Rules */}
           <div style={CARD} className="card-glow">
             <CardHeader icon={<Shield className="w-4 h-4" />} title="Firm Rules" />
-            <div className="grid grid-cols-2 gap-4 mb-5">
+            <div className="grid grid-cols-2 gap-6 mb-6">
               {([
                 ["accountSize", "Account Size ($)", "Your funded account size"],
                 ["dailyLossPct", "Daily Loss (%)", "Max daily drawdown % from your firm"],
@@ -276,29 +277,31 @@ export default function RiskDashboard() {
           {/* Daily P&L + Gauge */}
           <div style={CARD} className="card-glow">
             <CardHeader icon={<TrendingUp className="w-4 h-4" />} title="Daily P&amp;L" />
-            <div className="flex items-center gap-6 mb-5">
+            <div className="flex items-start gap-6 mb-5">
               {/* Circular gauge */}
-              <div className="relative flex-shrink-0" style={{ width: 96, height: 96 }}>
-                <svg width="96" height="96" viewBox="0 0 96 96">
-                  <circle cx="48" cy="48" r={GAUGE_R} fill="none" stroke="#1a1a2e" strokeWidth="8" />
-                  <circle
-                    cx="48" cy="48" r={GAUGE_R}
-                    fill="none"
-                    stroke={barColor}
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                    strokeDasharray={GAUGE_C}
-                    strokeDashoffset={gaugeDash}
-                    transform="rotate(-90 48 48)"
-                    style={{ transition: "stroke-dashoffset 0.5s ease-out, stroke 0.3s ease" }}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="mono font-black text-sm" style={{ color: barColor }}>
-                    {usedPct.toFixed(0)}%
-                  </span>
-                  <span className="text-xs" style={{ color: "#475569", fontSize: "10px" }}>used</span>
+              <div className="flex flex-col items-center flex-shrink-0" style={{ minWidth: 80, minHeight: 80 }}>
+                <div className="relative" style={{ width: 96, height: 96 }}>
+                  <svg width="96" height="96" viewBox="0 0 96 96">
+                    <circle cx="48" cy="48" r={GAUGE_R} fill="none" stroke="#1a1a2e" strokeWidth="8" />
+                    <circle
+                      cx="48" cy="48" r={GAUGE_R}
+                      fill="none"
+                      stroke={barColor}
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray={GAUGE_C}
+                      strokeDashoffset={gaugeDash}
+                      transform="rotate(-90 48 48)"
+                      style={{ transition: "stroke-dashoffset 0.5s ease-out, stroke 0.3s ease" }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="mono font-black text-sm" style={{ color: barColor }}>
+                      {usedPct.toFixed(0)}%
+                    </span>
+                  </div>
                 </div>
+                <span className="mono text-xs block" style={{ color: "#475569", marginTop: "8px" }}>used</span>
               </div>
               {/* Big P&L number */}
               <div>
@@ -317,14 +320,16 @@ export default function RiskDashboard() {
               </div>
             </div>
             {/* Progress bar */}
-            <div
-              className="shimmer-bar rounded-full"
-              style={{ backgroundColor: "#1a1a2e", height: "14px", marginTop: "4px" }}
-            >
+            <div style={{ paddingTop: "16px", paddingBottom: "8px" }}>
               <div
-                className="h-full rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${usedPct}%`, backgroundColor: barColor }}
-              />
+                className="shimmer-bar rounded-full"
+                style={{ backgroundColor: "#1a1a2e", height: "14px" }}
+              >
+                <div
+                  className="h-full rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${usedPct}%`, backgroundColor: barColor }}
+                />
+              </div>
             </div>
           </div>
 
@@ -421,7 +426,7 @@ export default function RiskDashboard() {
           {/* Trade Log */}
           <div style={CARD} className="card-glow">
             <CardHeader icon={<List className="w-4 h-4" />} title="Trade Log" />
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-2 gap-6 mb-5">
               <div>
                 <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider" style={{ color: "#6b7280" }}>Entry Price</label>
                 <DarkInput type="number" value={entry} onChange={(e) => setEntry(e.target.value)} placeholder="0.00" tooltip="Price you entered the trade" />
@@ -532,7 +537,7 @@ export default function RiskDashboard() {
           {/* Pre-Open Setup */}
           <div style={CARD} className="card-glow">
             <CardHeader icon={<Target className="w-4 h-4" />} title="Pre-Open Setup" />
-            <div className="grid grid-cols-2 gap-4 mb-5">
+            <div className="grid grid-cols-2 gap-6 mb-5">
               <div>
                 <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider" style={{ color: "#6b7280" }}>Current Price</label>
                 <DarkInput
@@ -564,14 +569,14 @@ export default function RiskDashboard() {
             <div className="grid grid-cols-2 gap-4 mb-5">
               <div
                 className="rounded-xl text-center flex flex-col items-center justify-center"
-                style={{ backgroundColor: "#080810", border: "1px solid #1a1a2e", minHeight: 88, padding: "16px 12px" }}
+                style={{ backgroundColor: "#080810", border: "1px solid #1a1a2e", minHeight: 100, padding: "20px 16px" }}
               >
                 <p className="text-xs uppercase font-semibold mb-2" style={{ color: "#334155", letterSpacing: "0.12em" }}>
                   Pre-Open
                 </p>
                 <p
                   className="mono font-black"
-                  style={{ fontSize: "1.35rem", color: currentPrice ? "#f1f5f9" : "#1e293b", lineHeight: 1 }}
+                  style={{ fontSize: "1.5rem", color: currentPrice ? "#f1f5f9" : "#1e293b", lineHeight: 1 }}
                 >
                   {currentPrice ? `$${parseFloat(currentPrice).toLocaleString()}` : "—"}
                 </p>
@@ -581,8 +586,8 @@ export default function RiskDashboard() {
                 style={{
                   backgroundColor: "#080810",
                   border: `1px solid ${revTarget ? "rgba(79,142,247,0.25)" : "#1a1a2e"}`,
-                  minHeight: 88,
-                  padding: "16px 12px",
+                  minHeight: 100,
+                  padding: "20px 16px",
                 }}
               >
                 <p className="text-xs uppercase font-semibold mb-2" style={{ color: "#334155", letterSpacing: "0.12em" }}>
@@ -590,7 +595,7 @@ export default function RiskDashboard() {
                 </p>
                 <p
                   className="mono font-black"
-                  style={{ fontSize: "1.35rem", color: revTarget ? "#4f8ef7" : "#1e293b", lineHeight: 1 }}
+                  style={{ fontSize: "1.5rem", color: revTarget ? "#4f8ef7" : "#1e293b", lineHeight: 1 }}
                 >
                   {revTarget ? `$${revTarget.toFixed(0)}` : "—"}
                 </p>
