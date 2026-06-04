@@ -1,61 +1,67 @@
 "use client";
 import { useState, useCallback } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { FIRMS } from "@/lib/firms";
 import { runSimulation, type EVInput, type SimulationResult } from "@/lib/simulation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trophy } from "lucide-react";
 
 const DEFAULT_INPUT: EVInput = { totalTrades: 100, wins: 55, avgWin: 200, avgLoss: 150 };
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
+    style: "currency", currency: "USD", maximumFractionDigits: 0,
   }).format(n);
 }
 
-const inputCls =
-  "w-full rounded-lg px-3 py-2.5 text-white outline-none transition-all duration-150 text-sm";
-const inputStyle = {
-  backgroundColor: "#1a1a2e",
-  border: "1px solid #1e1e2e",
-};
-const inputFocusStyle = {
-  borderColor: "#3b82f6",
-  boxShadow: "0 0 0 2px rgba(59,130,246,0.25)",
+const INPUT_BASE: React.CSSProperties = {
+  width: "100%",
+  backgroundColor: "#0c0c18",
+  border: "1px solid #1a1a2e",
+  borderRadius: "8px",
+  padding: "9px 12px",
+  color: "#f1f5f9",
+  fontSize: "14px",
+  outline: "none",
+  transition: "border-color 0.15s, box-shadow 0.15s",
 };
 
 function DarkInput({
-  value,
-  onChange,
   hasError,
+  tooltip,
   ...rest
-}: React.InputHTMLAttributes<HTMLInputElement> & { hasError?: boolean }) {
+}: React.InputHTMLAttributes<HTMLInputElement> & { hasError?: boolean; tooltip?: string }) {
   const [focused, setFocused] = useState(false);
-  return (
+  const input = (
     <input
       {...rest}
       type="number"
-      value={value}
-      onChange={onChange}
-      className={inputCls}
       style={{
-        ...inputStyle,
-        ...(focused ? inputFocusStyle : {}),
-        ...(hasError ? { borderColor: "#ef4444" } : {}),
+        ...INPUT_BASE,
+        ...(focused ? { borderColor: "#4f8ef7", boxShadow: "0 0 0 2px rgba(79,142,247,0.2)" } : {}),
+        ...(hasError ? { borderColor: "#ff4757" } : {}),
       }}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
     />
   );
+  if (!tooltip) return input;
+  return (
+    <div className="tip-wrap">
+      <span className="tip">{tooltip}</span>
+      {input}
+    </div>
+  );
 }
+
+const MEDAL_COLORS = ["#FFD700", "#C0C0C0", "#CD7F32"];
 
 export default function EVCalculator() {
   const [input, setInput] = useLocalStorage<EVInput>("ev.calculator.input", DEFAULT_INPUT);
   const [results, setResults] = useState<SimulationResult[] | null>(null);
   const [running, setRunning] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof EVInput, string>>>({});
+  const sectionRef = useScrollReveal<HTMLElement>();
 
   const validate = () => {
     const errs: Partial<Record<keyof EVInput, string>> = {};
@@ -80,13 +86,20 @@ export default function EVCalculator() {
   }, [input]);
 
   const winRate = input.totalTrades > 0
-    ? ((input.wins / input.totalTrades) * 100).toFixed(1)
-    : "0.0";
+    ? ((input.wins / input.totalTrades) * 100).toFixed(1) : "0.0";
   const rr = input.avgLoss > 0 ? (input.avgWin / input.avgLoss).toFixed(2) : "—";
 
-  const field = (key: keyof EVInput, label: string, max?: number) => (
+  const field = (
+    key: keyof EVInput,
+    label: string,
+    tooltip: string,
+    max?: number,
+  ) => (
     <div>
-      <label className="block text-sm font-medium mb-1.5" style={{ color: "#94a3b8" }}>
+      <label
+        className="block text-xs font-semibold mb-1.5 uppercase tracking-wider"
+        style={{ color: "#6b7280" }}
+      >
         {label}
       </label>
       <DarkInput
@@ -95,47 +108,65 @@ export default function EVCalculator() {
         max={max}
         onChange={(e) => setInput({ ...input, [key]: parseFloat(e.target.value) || 0 })}
         hasError={!!errors[key]}
+        tooltip={tooltip}
       />
       {errors[key] && (
-        <p className="text-sm mt-1" style={{ color: "#ef4444" }}>
-          {errors[key]}
-        </p>
+        <p className="text-xs mt-1" style={{ color: "#ff4757" }}>{errors[key]}</p>
       )}
     </div>
   );
 
   return (
-    <section id="ev-calc" className="scroll-mt-20">
+    <section ref={sectionRef} id="ev-calc" className="scroll-mt-20">
       <div
-        className="rounded-2xl p-6 md:p-8"
-        style={{ backgroundColor: "#111118", border: "1px solid #1e1e2e" }}
+        className="rounded-2xl overflow-hidden card-glow"
+        style={{ backgroundColor: "#0f0f1a", border: "1px solid #1a1a2e" }}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2">
+
           {/* LEFT — Inputs */}
-          <div className="space-y-4">
-            <div className="mb-2">
-              <h2 className="text-xl font-bold text-white">Your Trading Stats</h2>
-              <p className="text-sm mt-1" style={{ color: "#64748b" }}>
-                Enter your historical stats to run the simulation.
+          <div
+            className="p-6 md:p-8"
+            style={{
+              borderRight: "1px solid #1a1a2e",
+              borderLeft: "3px solid rgba(79,142,247,0.35)",
+            }}
+          >
+            <div className="mb-5">
+              <h2 className="text-lg font-bold text-white">Your Trading Stats</h2>
+              <p className="text-xs mt-1" style={{ color: "#6b7280" }}>
+                Based on your last 50+ trades
               </p>
             </div>
 
-            {field("totalTrades", "Total Trades", 10000)}
-            {field("wins", "Winning Trades", input.totalTrades)}
-            {field("avgWin", "Avg Win ($)")}
-            {field("avgLoss", "Avg Loss ($)")}
+            <div className="grid grid-cols-2 gap-3 mb-5">
+              {field("totalTrades", "Total Trades", "Total trades in your sample", 10000)}
+              {field("wins", "Winning Trades", "Number of profitable trades", input.totalTrades)}
+              {field("avgWin", "Avg Win ($)", "Average profit per winning trade")}
+              {field("avgLoss", "Avg Loss ($)", "Average loss per losing trade")}
+            </div>
 
-            {/* Stat badges */}
-            <div className="flex gap-3 flex-wrap pt-1">
+            {/* Stat pills */}
+            <div className="flex gap-3 flex-wrap mb-5">
               <span
-                className="px-3 py-1 rounded-full text-sm font-semibold"
-                style={{ backgroundColor: "#0d2a1f", color: "#10b981", border: "1px solid #10b981" + "33" }}
+                className="mono px-3 py-1.5 rounded-full text-sm font-bold"
+                style={{
+                  backgroundColor: "#001a10",
+                  color: "#00d68f",
+                  border: "1px solid rgba(0,214,143,0.22)",
+                  boxShadow: "0 0 12px rgba(0,214,143,0.1)",
+                }}
               >
-                Win Rate: {winRate}%
+                Win Rate {winRate}%
               </span>
               <span
-                className="px-3 py-1 rounded-full text-sm font-semibold"
-                style={{ backgroundColor: "#0d1a2e", color: "#3b82f6", border: "1px solid #3b82f6" + "33" }}
+                className="mono px-3 py-1.5 rounded-full text-sm font-bold"
+                style={{
+                  backgroundColor: "#080e1e",
+                  color: "#4f8ef7",
+                  border: "1px solid rgba(79,142,247,0.22)",
+                  boxShadow: "0 0 12px rgba(79,142,247,0.1)",
+                }}
               >
                 R:R {rr}
               </span>
@@ -144,17 +175,8 @@ export default function EVCalculator() {
             <button
               onClick={handleRun}
               disabled={running}
-              className="w-auto flex items-center gap-2 font-semibold px-6 py-3 rounded-xl transition-all duration-150 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{
-                backgroundColor: running ? "#2563eb" : "#3b82f6",
-                color: "#ffffff",
-              }}
-              onMouseEnter={(e) => {
-                if (!running) (e.currentTarget as HTMLElement).style.backgroundColor = "#2563eb";
-              }}
-              onMouseLeave={(e) => {
-                if (!running) (e.currentTarget as HTMLElement).style.backgroundColor = "#3b82f6";
-              }}
+              className="btn-primary flex items-center gap-2 font-bold px-6 py-3 rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: "#4f8ef7", color: "#ffffff" }}
             >
               {running && <Loader2 className="w-4 h-4 animate-spin" />}
               {running ? "Simulating…" : "Run Simulation"}
@@ -162,20 +184,20 @@ export default function EVCalculator() {
           </div>
 
           {/* RIGHT — Results */}
-          <div>
-            <div className="mb-4">
-              <h2 className="text-xl font-bold text-white">Results</h2>
-              <p className="text-sm mt-1" style={{ color: "#64748b" }}>
-                Ranked by expected value. Top 3 highlighted.
+          <div className="p-6 md:p-8">
+            <div className="mb-5">
+              <h2 className="text-lg font-bold text-white">Results</h2>
+              <p className="text-xs mt-1" style={{ color: "#6b7280" }}>
+                Ranked by expected value · 1,000 Monte Carlo runs each
               </p>
             </div>
 
             {!results && !running && (
               <div
-                className="rounded-xl p-8 text-center"
-                style={{ backgroundColor: "#0a0a0f", border: "1px solid #1e1e2e" }}
+                className="rounded-xl p-10 text-center"
+                style={{ backgroundColor: "#080810", border: "1px solid #1a1a2e" }}
               >
-                <p className="text-sm" style={{ color: "#475569" }}>
+                <p className="text-sm" style={{ color: "#334155" }}>
                   Enter your stats and click Run Simulation
                 </p>
               </div>
@@ -183,16 +205,16 @@ export default function EVCalculator() {
 
             {results && (
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-xs">
                   <thead>
-                    <tr style={{ borderBottom: "1px solid #1e1e2e" }}>
-                      {["Firm", "Pass%", "EV", "Cost→Funded", "Split%"].map((h, i) => (
+                    <tr style={{ borderBottom: "1px solid #1a1a2e" }}>
+                      {["", "Firm", "Pass%", "EV", "Cost→Funded", "Split"].map((h, i) => (
                         <th
-                          key={h}
-                          className={`pb-2.5 font-medium text-xs uppercase tracking-wider ${
-                            i === 0 ? "text-left" : "text-right"
+                          key={i}
+                          className={`pb-2.5 font-semibold uppercase tracking-wider ${
+                            i <= 1 ? "text-left" : "text-right"
                           }`}
-                          style={{ color: "#475569" }}
+                          style={{ color: "#334155", fontSize: "10px" }}
                         >
                           {h}
                         </th>
@@ -203,47 +225,90 @@ export default function EVCalculator() {
                     {results.map((r, i) => (
                       <tr
                         key={r.firm}
-                        className="transition-colors duration-150"
+                        className="transition-colors duration-100 cursor-default"
                         style={{
-                          borderBottom: "1px solid #1e1e2e",
-                          backgroundColor:
+                          borderBottom: "1px solid #1a1a2e",
+                          borderLeft:
                             i < 3
-                              ? i % 2 === 0
-                                ? "rgba(16,185,129,0.06)"
-                                : "rgba(16,185,129,0.03)"
-                              : i % 2 === 0
-                              ? "transparent"
-                              : "rgba(255,255,255,0.015)",
-                          borderLeft: i < 3 ? "3px solid #10b981" : "3px solid transparent",
+                              ? `3px solid ${MEDAL_COLORS[i]}60`
+                              : "3px solid transparent",
                         }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.backgroundColor = "#1a1a2e")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.backgroundColor = "transparent")
+                        }
                       >
-                        <td
-                          className="py-2.5 pl-3 pr-4 font-medium"
-                          style={{ color: i < 3 ? "#10b981" : "#e2e8f0" }}
-                        >
-                          {r.firm}
+                        {/* Rank */}
+                        <td className="py-2.5 pl-2 pr-1 w-10">
+                          {i < 3 ? (
+                            <span
+                              className="mono font-black flex items-center gap-0.5"
+                              style={{ color: MEDAL_COLORS[i], fontSize: "11px" }}
+                            >
+                              {i === 0 && <Trophy className="w-3 h-3" />}
+                              #{i + 1}
+                            </span>
+                          ) : (
+                            <span className="mono" style={{ color: "#334155", fontSize: "11px" }}>
+                              #{i + 1}
+                            </span>
+                          )}
                         </td>
+
+                        {/* Firm + badge */}
+                        <td className="py-2.5 pr-3">
+                          <div className="flex flex-col gap-0.5">
+                            <span
+                              className="font-semibold"
+                              style={{ color: i < 3 ? "#00d68f" : "#e2e8f0" }}
+                            >
+                              {r.firm}
+                            </span>
+                            {i === 0 && (
+                              <span
+                                className="text-xs px-1.5 py-0.5 rounded font-bold self-start"
+                                style={{
+                                  backgroundColor: "rgba(0,214,143,0.1)",
+                                  color: "#00d68f",
+                                  border: "1px solid rgba(0,214,143,0.22)",
+                                }}
+                              >
+                                Best for you
+                              </span>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* Pass% */}
                         <td
-                          className="py-2.5 text-right"
-                          style={{ color: i < 3 ? "#10b981" : "#94a3b8" }}
+                          className="py-2.5 text-right mono"
+                          style={{ color: i < 3 ? "#00d68f" : "#6b7280" }}
                         >
                           {r.passRate}%
                         </td>
+
+                        {/* EV */}
                         <td
-                          className="py-2.5 text-right font-bold"
-                          style={{ color: r.ev >= 0 ? "#10b981" : "#ef4444" }}
+                          className="py-2.5 text-right font-black mono"
+                          style={{ color: r.ev >= 0 ? "#00d68f" : "#ff4757" }}
                         >
                           {fmt(r.ev)}
                         </td>
+
+                        {/* Cost→Funded */}
                         <td
-                          className="py-2.5 text-right"
-                          style={{ color: i < 3 ? "#10b981" : "#94a3b8" }}
+                          className="py-2.5 text-right mono"
+                          style={{ color: i < 3 ? "#00d68f" : "#6b7280" }}
                         >
                           {fmt(r.costToFunded)}
                         </td>
+
+                        {/* Split */}
                         <td
-                          className="py-2.5 pr-2 text-right"
-                          style={{ color: i < 3 ? "#10b981" : "#94a3b8" }}
+                          className="py-2.5 pr-2 text-right mono"
+                          style={{ color: i < 3 ? "#00d68f" : "#6b7280" }}
                         >
                           {r.split}%
                         </td>
@@ -251,9 +316,6 @@ export default function EVCalculator() {
                     ))}
                   </tbody>
                 </table>
-                <p className="text-xs mt-3" style={{ color: "#334155" }}>
-                  1,000 Monte Carlo runs per firm. Top 3 by EV highlighted.
-                </p>
               </div>
             )}
           </div>
