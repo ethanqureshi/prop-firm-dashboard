@@ -7,26 +7,39 @@ export default function TopNav() {
   };
 
   return (
-    <nav className="sticky top-0 bg-slate-950/95 backdrop-blur border-b border-slate-800 z-40">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        <span className="text-slate-100 font-bold text-lg tracking-tight">
-          PropFirm Dashboard
+    <nav
+      className="sticky top-0 z-40 backdrop-blur"
+      style={{
+        backgroundColor: "rgba(10, 10, 15, 0.95)",
+        borderBottom: "1px solid #1e1e2e",
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        <span className="font-bold text-lg tracking-tight text-white">
+          PropFirm{" "}
+          <span style={{ color: "#3b82f6" }}>Dashboard</span>
         </span>
-        <div className="flex gap-6">
-          <a
-            href="#ev-calc"
-            onClick={scrollTo("ev-calc")}
-            className="text-slate-400 hover:text-blue-400 transition-colors duration-150 text-sm font-medium cursor-pointer"
-          >
-            EV Calculator
-          </a>
-          <a
-            href="#risk-dash"
-            onClick={scrollTo("risk-dash")}
-            className="text-slate-400 hover:text-blue-400 transition-colors duration-150 text-sm font-medium cursor-pointer"
-          >
-            Risk Dashboard
-          </a>
+        <div className="flex gap-2">
+          {[
+            { id: "ev-calc", label: "EV Calculator" },
+            { id: "risk-dash", label: "Risk Dashboard" },
+          ].map(({ id, label }) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              onClick={scrollTo(id)}
+              className="px-4 py-1.5 rounded-full text-sm font-medium text-slate-400 hover:text-white transition-all duration-150 cursor-pointer"
+              style={{ backgroundColor: "transparent" }}
+              onMouseEnter={(e) =>
+                ((e.target as HTMLElement).style.backgroundColor = "#1e1e2e")
+              }
+              onMouseLeave={(e) =>
+                ((e.target as HTMLElement).style.backgroundColor = "transparent")
+              }
+            >
+              {label}
+            </a>
+          ))}
         </div>
       </div>
     </nav>
