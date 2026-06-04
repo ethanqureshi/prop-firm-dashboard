@@ -58,8 +58,8 @@ const CARD: React.CSSProperties = {
   backgroundColor: "#0f0f1a",
   border: "1px solid #1a1a2e",
   borderRadius: "16px",
-  padding: "20px",
-  marginBottom: "20px",
+  padding: "24px",
+  marginBottom: "24px",
 };
 
 const INPUT_BASE: React.CSSProperties = {
@@ -100,7 +100,7 @@ function DarkInput(props: React.InputHTMLAttributes<HTMLInputElement> & { hasErr
 
 function CardHeader({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
-    <div className="flex items-center gap-2 mb-4">
+    <div className="flex items-center gap-2.5 mb-5">
       <span style={{ color: "#4f8ef7" }}>{icon}</span>
       <h3 className="text-sm font-bold tracking-wide text-white uppercase" style={{ letterSpacing: "0.05em" }}>
         {title}
@@ -195,9 +195,9 @@ export default function RiskDashboard() {
   });
 
   return (
-    <section ref={sectionRef} id="risk-dash" className="scroll-mt-20">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-white">Intraday Risk Dashboard</h2>
+    <section ref={sectionRef} id="risk-dash" className="scroll-mt-24">
+      <div className="mb-8">
+        <h2 className="text-2xl md:text-3xl font-black text-white">Intraday Risk Dashboard</h2>
         <p className="text-sm mt-1" style={{ color: "#6b7280" }}>
           Real-time position sizing, daily P&amp;L tracking, and market cutoff timer.
         </p>
@@ -223,13 +223,13 @@ export default function RiskDashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         {/* LEFT */}
         <div>
           {/* Firm Rules */}
           <div style={CARD} className="card-glow">
             <CardHeader icon={<Shield className="w-4 h-4" />} title="Firm Rules" />
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-2 gap-4 mb-5">
               {([
                 ["accountSize", "Account Size ($)", "Your funded account size"],
                 ["dailyLossPct", "Daily Loss (%)", "Max daily drawdown % from your firm"],
@@ -276,7 +276,7 @@ export default function RiskDashboard() {
           {/* Daily P&L + Gauge */}
           <div style={CARD} className="card-glow">
             <CardHeader icon={<TrendingUp className="w-4 h-4" />} title="Daily P&amp;L" />
-            <div className="flex items-center gap-5 mb-4">
+            <div className="flex items-center gap-6 mb-5">
               {/* Circular gauge */}
               <div className="relative flex-shrink-0" style={{ width: 96, height: 96 }}>
                 <svg width="96" height="96" viewBox="0 0 96 96">
@@ -319,7 +319,7 @@ export default function RiskDashboard() {
             {/* Progress bar */}
             <div
               className="shimmer-bar rounded-full"
-              style={{ backgroundColor: "#1a1a2e", height: "14px" }}
+              style={{ backgroundColor: "#1a1a2e", height: "14px", marginTop: "4px" }}
             >
               <div
                 className="h-full rounded-full transition-all duration-500 ease-out"
@@ -387,10 +387,11 @@ export default function RiskDashboard() {
             <CardHeader icon={<Clock className="w-4 h-4" />} title="Market Cutoff (11am EST)" />
             {cutoffSec > 0 ? (
               <div
-                className="rounded-xl p-5 text-center"
+                className="rounded-xl text-center"
                 style={{
                   backgroundColor: "#080810",
                   border: `1px solid ${timerColor}30`,
+                  padding: "28px 24px",
                 }}
               >
                 <p
@@ -420,7 +421,7 @@ export default function RiskDashboard() {
           {/* Trade Log */}
           <div style={CARD} className="card-glow">
             <CardHeader icon={<List className="w-4 h-4" />} title="Trade Log" />
-            <div className="grid grid-cols-2 gap-2 mb-3">
+            <div className="grid grid-cols-2 gap-3 mb-4">
               <div>
                 <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider" style={{ color: "#6b7280" }}>Entry Price</label>
                 <DarkInput type="number" value={entry} onChange={(e) => setEntry(e.target.value)} placeholder="0.00" tooltip="Price you entered the trade" />
@@ -531,7 +532,7 @@ export default function RiskDashboard() {
           {/* Pre-Open Setup */}
           <div style={CARD} className="card-glow">
             <CardHeader icon={<Target className="w-4 h-4" />} title="Pre-Open Setup" />
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-2 gap-4 mb-5">
               <div>
                 <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider" style={{ color: "#6b7280" }}>Current Price</label>
                 <DarkInput
@@ -560,34 +561,36 @@ export default function RiskDashboard() {
             </div>
 
             {/* Side-by-side large display */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-2 gap-4 mb-5">
               <div
-                className="rounded-xl p-4 text-center"
-                style={{ backgroundColor: "#080810", border: "1px solid #1a1a2e" }}
+                className="rounded-xl text-center flex flex-col items-center justify-center"
+                style={{ backgroundColor: "#080810", border: "1px solid #1a1a2e", minHeight: 88, padding: "16px 12px" }}
               >
-                <p className="text-xs uppercase tracking-widest mb-2 font-semibold" style={{ color: "#334155", letterSpacing: "0.12em" }}>
+                <p className="text-xs uppercase font-semibold mb-2" style={{ color: "#334155", letterSpacing: "0.12em" }}>
                   Pre-Open
                 </p>
                 <p
                   className="mono font-black"
-                  style={{ fontSize: "1.5rem", color: currentPrice ? "#f1f5f9" : "#1e293b" }}
+                  style={{ fontSize: "1.35rem", color: currentPrice ? "#f1f5f9" : "#1e293b", lineHeight: 1 }}
                 >
                   {currentPrice ? `$${parseFloat(currentPrice).toLocaleString()}` : "—"}
                 </p>
               </div>
               <div
-                className="rounded-xl p-4 text-center"
+                className="rounded-xl text-center flex flex-col items-center justify-center"
                 style={{
                   backgroundColor: "#080810",
                   border: `1px solid ${revTarget ? "rgba(79,142,247,0.25)" : "#1a1a2e"}`,
+                  minHeight: 88,
+                  padding: "16px 12px",
                 }}
               >
-                <p className="text-xs uppercase tracking-widest mb-2 font-semibold" style={{ color: "#334155", letterSpacing: "0.12em" }}>
+                <p className="text-xs uppercase font-semibold mb-2" style={{ color: "#334155", letterSpacing: "0.12em" }}>
                   3% Target
                 </p>
                 <p
                   className="mono font-black"
-                  style={{ fontSize: "1.5rem", color: revTarget ? "#4f8ef7" : "#1e293b" }}
+                  style={{ fontSize: "1.35rem", color: revTarget ? "#4f8ef7" : "#1e293b", lineHeight: 1 }}
                 >
                   {revTarget ? `$${revTarget.toFixed(0)}` : "—"}
                 </p>

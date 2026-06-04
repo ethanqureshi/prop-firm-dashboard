@@ -117,7 +117,7 @@ export default function EVCalculator() {
   );
 
   return (
-    <section ref={sectionRef} id="ev-calc" className="scroll-mt-20">
+    <section ref={sectionRef} id="ev-calc" className="scroll-mt-24">
       <div
         className="rounded-2xl overflow-hidden card-glow"
         style={{ backgroundColor: "#0f0f1a", border: "1px solid #1a1a2e" }}
@@ -139,7 +139,7 @@ export default function EVCalculator() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-5">
+            <div className="grid grid-cols-2 gap-4 sm:gap-5 mb-6">
               {field("totalTrades", "Total Trades", "Total trades in your sample", 10000)}
               {field("wins", "Winning Trades", "Number of profitable trades", input.totalTrades)}
               {field("avgWin", "Avg Win ($)", "Average profit per winning trade")}
@@ -147,7 +147,7 @@ export default function EVCalculator() {
             </div>
 
             {/* Stat pills */}
-            <div className="flex gap-3 flex-wrap mb-5">
+            <div className="flex gap-3 flex-wrap mb-6">
               <span
                 className="mono px-3 py-1.5 rounded-full text-sm font-bold"
                 style={{
@@ -185,7 +185,7 @@ export default function EVCalculator() {
 
           {/* RIGHT — Results */}
           <div className="p-6 md:p-8">
-            <div className="mb-5">
+            <div className="mb-6">
               <h2 className="text-lg font-bold text-white">Results</h2>
               <p className="text-xs mt-1" style={{ color: "#6b7280" }}>
                 Ranked by expected value · 1,000 Monte Carlo runs each
@@ -211,10 +211,10 @@ export default function EVCalculator() {
                       {["", "Firm", "Pass%", "EV", "Cost→Funded", "Split"].map((h, i) => (
                         <th
                           key={i}
-                          className={`pb-2.5 font-semibold uppercase tracking-wider ${
+                          className={`pb-3 font-semibold uppercase tracking-wider ${
                             i <= 1 ? "text-left" : "text-right"
                           }`}
-                          style={{ color: "#334155", fontSize: "10px" }}
+                          style={{ color: "#334155", fontSize: "10px", letterSpacing: "0.08em" }}
                         >
                           {h}
                         </th>
@@ -241,7 +241,7 @@ export default function EVCalculator() {
                         }
                       >
                         {/* Rank */}
-                        <td className="py-2.5 pl-2 pr-1 w-10">
+                        <td className="py-3 pl-3 pr-2" style={{ width: 52, minWidth: 52 }}>
                           {i < 3 ? (
                             <span
                               className="mono font-black flex items-center gap-0.5"
@@ -258,7 +258,7 @@ export default function EVCalculator() {
                         </td>
 
                         {/* Firm + badge */}
-                        <td className="py-2.5 pr-3">
+                        <td className="py-3 pr-4" style={{ minWidth: 130 }}>
                           <div className="flex flex-col gap-0.5">
                             <span
                               className="font-semibold"
@@ -283,7 +283,7 @@ export default function EVCalculator() {
 
                         {/* Pass% */}
                         <td
-                          className="py-2.5 text-right mono"
+                          className="py-3 text-right mono"
                           style={{ color: i < 3 ? "#00d68f" : "#6b7280" }}
                         >
                           {r.passRate}%
@@ -291,7 +291,7 @@ export default function EVCalculator() {
 
                         {/* EV */}
                         <td
-                          className="py-2.5 text-right font-black mono"
+                          className="py-3 text-right font-black mono"
                           style={{ color: r.ev >= 0 ? "#00d68f" : "#ff4757" }}
                         >
                           {fmt(r.ev)}
@@ -299,7 +299,7 @@ export default function EVCalculator() {
 
                         {/* Cost→Funded */}
                         <td
-                          className="py-2.5 text-right mono"
+                          className="py-3 text-right mono"
                           style={{ color: i < 3 ? "#00d68f" : "#6b7280" }}
                         >
                           {fmt(r.costToFunded)}
@@ -307,7 +307,7 @@ export default function EVCalculator() {
 
                         {/* Split */}
                         <td
-                          className="py-2.5 pr-2 text-right mono"
+                          className="py-3 pr-3 text-right mono"
                           style={{ color: i < 3 ? "#00d68f" : "#6b7280" }}
                         >
                           {r.split}%
