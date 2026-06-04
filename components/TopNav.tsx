@@ -39,105 +39,117 @@ export default function TopNav() {
   return (
     <>
       <nav
-        className="sticky top-0 z-40 backdrop-blur"
+        className="sticky top-0 z-40 backdrop-blur-md"
         style={{
           backgroundColor: "rgba(8,8,16,0.97)",
-          borderBottom: "1px solid #1a1a2e",
+          borderBottom: "1px solid #1e1e2e",
         }}
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div
+          className="max-w-5xl mx-auto px-6 sm:px-8 flex items-center justify-between"
+          style={{ height: 60 }}
+        >
           {/* Logo */}
-          <span className="font-bold text-lg tracking-tight text-white flex-shrink-0">
-            PropFirm <span style={{ color: "#4f8ef7" }}>Dashboard</span>
+          <span className="font-bold text-base tracking-tight text-white flex-shrink-0 select-none">
+            PropFirm{" "}
+            <span style={{ color: "#4f8ef7" }}>Dashboard</span>
           </span>
 
-          {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-8">
+          {/* Desktop nav — visible at sm (640px+) */}
+          <div className="hidden sm:flex items-center" style={{ gap: 8 }}>
             {NAV_LINKS.map(({ id, label }) => (
               <a
                 key={id}
                 href={`#${id}`}
                 onClick={scrollTo(id)}
-                className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-150 cursor-pointer"
-                style={{ color: "#94a3b8", border: "1px solid transparent" }}
+                className="cursor-pointer rounded-lg text-sm font-medium transition-colors duration-150"
+                style={{
+                  color: "#cbd5e1",
+                  padding: "8px 16px",
+                  whiteSpace: "nowrap",
+                }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
+                  el.style.backgroundColor = "#1e1e2e";
                   el.style.color = "#ffffff";
-                  el.style.backgroundColor = "#1a1a2e";
-                  el.style.borderColor = "#2a2a3e";
                 }}
                 onMouseLeave={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.color = "#94a3b8";
                   el.style.backgroundColor = "transparent";
-                  el.style.borderColor = "transparent";
+                  el.style.color = "#cbd5e1";
                 }}
               >
                 {label}
               </a>
             ))}
 
-            <div style={{ width: 1, height: 22, backgroundColor: "#2a2a3e", flexShrink: 0 }} />
+            {/* Divider */}
+            <div
+              style={{
+                width: 1,
+                height: 20,
+                backgroundColor: "#1e1e2e",
+                margin: "0 8px",
+                flexShrink: 0,
+              }}
+            />
 
+            {/* How to use — solid blue pill */}
             <button
               onClick={() => setModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-150 cursor-pointer"
+              className="flex items-center cursor-pointer rounded-lg text-sm font-semibold transition-colors duration-150"
               style={{
-                backgroundColor: "#0d1628",
-                color: "#4f8ef7",
-                border: "1px solid rgba(79,142,247,0.3)",
+                backgroundColor: "#4f8ef7",
+                color: "#ffffff",
+                padding: "8px 16px",
+                gap: 6,
+                whiteSpace: "nowrap",
+                flexShrink: 0,
               }}
               onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLElement).style.backgroundColor = "rgba(79,142,247,0.1)")
+                ((e.currentTarget as HTMLElement).style.backgroundColor = "#3b7de8")
               }
               onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLElement).style.backgroundColor = "#0d1628")
+                ((e.currentTarget as HTMLElement).style.backgroundColor = "#4f8ef7")
               }
             >
-              <HelpCircle className="w-3.5 h-3.5" />
+              <HelpCircle style={{ width: 14, height: 14, flexShrink: 0 }} />
               How to use
             </button>
           </div>
 
           {/* Mobile hamburger */}
           <button
-            className="lg:hidden p-2 rounded-lg cursor-pointer transition-colors duration-150"
-            style={{ color: "#94a3b8" }}
+            className="sm:hidden p-2 rounded-lg cursor-pointer transition-colors duration-150"
+            style={{ color: "#cbd5e1" }}
             onClick={() => setMobileOpen((v) => !v)}
             aria-label="Toggle menu"
-            onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLElement).style.backgroundColor = "#1a1a2e")
-            }
-            onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLElement).style.backgroundColor = "transparent")
-            }
           >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileOpen
+              ? <X style={{ width: 20, height: 20 }} />
+              : <Menu style={{ width: 20, height: 20 }} />}
           </button>
         </div>
 
         {/* Mobile dropdown */}
         {mobileOpen && (
-          <div
-            className="lg:hidden"
-            style={{ borderTop: "1px solid #1a1a2e", backgroundColor: "rgba(8,8,16,0.98)" }}
-          >
-            <div className="px-6 py-3 flex flex-col">
+          <div style={{ borderTop: "1px solid #1e1e2e", backgroundColor: "rgba(8,8,16,0.99)" }}>
+            <div className="px-6 py-4 flex flex-col gap-1">
               {NAV_LINKS.map(({ id, label }) => (
                 <a
                   key={id}
                   href={`#${id}`}
                   onClick={scrollTo(id)}
-                  className="text-sm font-medium py-3 px-3 rounded-lg transition-colors duration-150 cursor-pointer"
-                  style={{ color: "#94a3b8" }}
+                  className="text-sm font-medium py-3 px-3 rounded-lg cursor-pointer transition-colors duration-150"
+                  style={{ color: "#cbd5e1" }}
                   onMouseEnter={(e) => {
                     const el = e.currentTarget as HTMLElement;
                     el.style.color = "#ffffff";
-                    el.style.backgroundColor = "#1a1a2e";
+                    el.style.backgroundColor = "#1e1e2e";
                   }}
                   onMouseLeave={(e) => {
                     const el = e.currentTarget as HTMLElement;
-                    el.style.color = "#94a3b8";
+                    el.style.color = "#cbd5e1";
                     el.style.backgroundColor = "transparent";
                   }}
                 >
@@ -146,16 +158,16 @@ export default function TopNav() {
               ))}
               <button
                 onClick={() => { setMobileOpen(false); setModalOpen(true); }}
-                className="flex items-center gap-2 text-sm font-semibold py-3 px-3 rounded-lg transition-colors duration-150 cursor-pointer text-left mb-1"
+                className="flex items-center gap-2 text-sm font-semibold py-3 px-3 rounded-lg cursor-pointer text-left transition-colors duration-150"
                 style={{ color: "#4f8ef7" }}
                 onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLElement).style.backgroundColor = "#1a1a2e")
+                  ((e.currentTarget as HTMLElement).style.backgroundColor = "#1e1e2e")
                 }
                 onMouseLeave={(e) =>
                   ((e.currentTarget as HTMLElement).style.backgroundColor = "transparent")
                 }
               >
-                <HelpCircle className="w-4 h-4" />
+                <HelpCircle style={{ width: 16, height: 16 }} />
                 How to use this
               </button>
             </div>
@@ -174,7 +186,7 @@ export default function TopNav() {
             className="w-full max-w-lg rounded-2xl flex flex-col"
             style={{
               backgroundColor: "#0f0f1a",
-              border: "1px solid #1a1a2e",
+              border: "1px solid #1e1e2e",
               boxShadow: "0 24px 80px rgba(0,0,0,0.7)",
               maxHeight: "90vh",
             }}
@@ -182,10 +194,10 @@ export default function TopNav() {
             {/* Header */}
             <div
               className="flex items-center justify-between px-6 py-5 flex-shrink-0"
-              style={{ borderBottom: "1px solid #1a1a2e" }}
+              style={{ borderBottom: "1px solid #1e1e2e" }}
             >
               <div className="flex items-center gap-2.5">
-                <HelpCircle className="w-4 h-4 flex-shrink-0" style={{ color: "#4f8ef7" }} />
+                <HelpCircle style={{ width: 16, height: 16, color: "#4f8ef7", flexShrink: 0 }} />
                 <h2 className="font-bold text-white text-base">How to use this</h2>
               </div>
               <button
@@ -195,7 +207,7 @@ export default function TopNav() {
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
                   el.style.color = "#f1f5f9";
-                  el.style.backgroundColor = "#1a1a2e";
+                  el.style.backgroundColor = "#1e1e2e";
                 }}
                 onMouseLeave={(e) => {
                   const el = e.currentTarget as HTMLElement;
@@ -204,7 +216,7 @@ export default function TopNav() {
                 }}
                 aria-label="Close"
               >
-                <X className="w-5 h-5" />
+                <X style={{ width: 18, height: 18 }} />
               </button>
             </div>
 
@@ -216,7 +228,7 @@ export default function TopNav() {
                   onClick={() => setActiveTab(tab)}
                   className="px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-150 cursor-pointer"
                   style={{
-                    backgroundColor: activeTab === tab ? "#4f8ef7" : "#1a1a2e",
+                    backgroundColor: activeTab === tab ? "#4f8ef7" : "#1e1e2e",
                     color: activeTab === tab ? "#ffffff" : "#6b7280",
                   }}
                 >
@@ -232,7 +244,7 @@ export default function TopNav() {
                   <li key={i} className="flex gap-4 items-start">
                     <span
                       className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
-                      style={{ backgroundColor: "#1a1a2e", color: "#4f8ef7", marginTop: "2px" }}
+                      style={{ backgroundColor: "#1e1e2e", color: "#4f8ef7", marginTop: 2 }}
                     >
                       {i + 1}
                     </span>
